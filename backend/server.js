@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './src/routes/authRoutes.js';
+import User from './src/models/User.js';
+import Favorite from './src/models/Favorite.js';
 
 dotenv.config();
 
@@ -15,10 +17,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
+const defaultOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : defaultOrigins;
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
-    credentials: true
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
 
@@ -46,6 +52,18 @@ mongoose
   .then(() => {
     // eslint-disable-next-line no-console
     console.log(`Connected to MongoDB at ${mongoUri}`);
+    // Ensure collections and indexes exist
+    Promise.all([
+      User.createCollection().catch(() => {}),
+      Favorite.createCollection().catch(() => {}),
+      User.syncIndexes().catch(() => {}),
+      Favorite.syncIndexes().catch(() => {})
+    ])
+      .then(() => {
+        // eslint-disable-next-line no-console
+        console.log('Ensured indexes and collections for users and favorites');
+      })
+      .catch(() => {});
     const port = process.env.PORT || 5000;
     app.listen(port, () => {
       // eslint-disable-next-line no-console
