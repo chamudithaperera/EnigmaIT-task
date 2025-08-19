@@ -1,0 +1,17 @@
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000',
+  withCredentials: true
+});
+
+export const register = async (payload) => {
+  const { data } = await api.post('/api/auth/register', payload);
+  return data;
+};
+
+export default {
+  register
+};
+
+
