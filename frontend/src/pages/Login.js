@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { login as loginRequest } from '../api/authApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../features/authSlice';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
+  const { status } = useSelector((s) => s.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,16 +20,12 @@ function Login() {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      await loginRequest({ email: email.trim(), password });
+    const action = await dispatch(loginUser({ email: email.trim(), password }));
+    if (loginUser.fulfilled.match(action)) {
       setSuccess('Logged in successfully.');
       setPassword('');
-    } catch (err) {
-      const message = err?.response?.data?.message || err?.message || 'Login failed';
-      setError(message);
-    } finally {
-      setIsSubmitting(false);
+    } else if (loginUser.rejected.match(action)) {
+      setError(action.payload || 'Login failed');
     }
   };
 
@@ -72,7 +70,7 @@ function Login() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={status === 'loading'}
             style={{
               width: '100%',
               padding: '12px 16px',
@@ -84,7 +82,7 @@ function Login() {
               fontWeight: 600
             }}
           >
-            {isSubmitting ? 'Logging in...' : 'Log in'}
+            {status === 'loading' ? 'Logging in...' : 'Log in'}
           </button>
 
           <p style={{ marginTop: 16, fontSize: 14, textAlign: 'center' }}>

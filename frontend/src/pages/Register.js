@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { register as registerRequest } from '../api/authApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../features/authSlice';
 
 function Register() {
   const [name, setName] = useState('');
@@ -8,7 +9,8 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
+  const { status } = useSelector((s) => s.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,19 +27,15 @@ function Register() {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      await registerRequest({ name: name.trim(), email: email.trim(), password });
+    const action = await dispatch(registerUser({ name: name.trim(), email: email.trim(), password }));
+    if (registerUser.fulfilled.match(action)) {
       setSuccess('Account created successfully. You can now log in.');
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-    } catch (err) {
-      const message = err?.response?.data?.message || err?.message || 'Registration failed';
-      setError(message);
-    } finally {
-      setIsSubmitting(false);
+    } else if (registerUser.rejected.match(action)) {
+      setError(action.payload || 'Registration failed');
     }
   };
 
@@ -100,7 +98,7 @@ function Register() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={status === 'loading'}
             style={{
               width: '100%',
               padding: '12px 16px',
@@ -112,7 +110,7 @@ function Register() {
               fontWeight: 600
             }}
           >
-            {isSubmitting ? 'Creating account...' : 'Create account'}
+            {status === 'loading' ? 'Creating account...' : 'Create account'}
           </button>
 
           <p style={{ marginTop: 16, fontSize: 14, textAlign: 'center' }}>
