@@ -32,7 +32,21 @@ function Favorites() {
   return (
     <div style={{ padding: 24, background: '#f7f7fb', minHeight: '100vh' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <h1 style={{ marginBottom: 24 }}>My Favorites</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+          <button 
+            onClick={() => navigate('/')}
+            style={{ 
+              padding: '8px 16px', 
+              background: '#f97360', 
+              border: '1px solid #e5e7eb', 
+              borderRadius: 8,
+              cursor: 'pointer'
+            }}
+          >
+            Back
+          </button>
+          <h1 style={{ margin: 0 }}>My Favorites</h1>
+        </div>
         
         {favorites.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 48 }}>
