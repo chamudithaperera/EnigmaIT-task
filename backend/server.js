@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './src/routes/authRoutes.js';
 import userRoutes from './src/routes/userRoutes.js';
+import recipeRoutes from './src/routes/recipeRoutes.js';
 import User from './src/models/User.js';
 import Favorite from './src/models/Favorite.js';
 
@@ -37,6 +38,7 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/recipes', recipeRoutes);
 
 // Global error handler
 // eslint-disable-next-line no-unused-vars
