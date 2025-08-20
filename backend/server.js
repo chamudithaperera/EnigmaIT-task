@@ -24,12 +24,16 @@ const defaultOrigins = [
   'http://127.0.0.1:3000',
   'https://enigma-it-task.vercel.app'
 ];
+const normalizeOrigin = (o) => (o || '').toLowerCase().replace(/\/$/, '');
 const envOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
-const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
+const allowedOrigins = Array.from(
+  new Set([...defaultOrigins, ...envOrigins].map(normalizeOrigin))
+);
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    const requestOrigin = normalizeOrigin(origin);
+    if (allowedOrigins.includes(requestOrigin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
