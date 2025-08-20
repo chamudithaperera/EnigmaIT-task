@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { fetchCategories, fetchByCategory, searchMeals } from '../api/recipeApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import CategoryFilter from '../components/recipes/CategoryFilter';
+import RecipeGrid from '../components/recipes/RecipeGrid';
+import RecipeModal from '../components/recipes/RecipeModal';
 
 function Home() {
   const user = useSelector((s) => s.auth.user);
@@ -12,6 +15,7 @@ function Home() {
   const [query, setQuery] = useState('Italian');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -79,34 +83,13 @@ function Home() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f7f7fb' }}>
-      <aside style={{ width: 260, padding: 24, background: '#fff', borderRight: '1px solid #eee' }}>
-        <h2 style={{ marginBottom: 12 }}>Categories</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {filteredCategories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setActive(c)}
-              style={{
-                textAlign: 'left',
-                padding: '10px 12px',
-                borderRadius: 10,
-                border: '1px solid #e5e7eb',
-                background: active === c ? '#3f3f46' : '#f3f4f6',
-                color: active === c ? '#fff' : '#111'
-              }}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </aside>
+      <CategoryFilter categories={filteredCategories} active={active} onSelect={setActive} />
       <main style={{ flex: 1, padding: 24 }}>
         <h2 style={{ marginBottom: 16 }}>Recipes</h2>
         <form onSubmit={onSearch} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Italian"
             style={{ flex: 1, padding: '12px 14px', borderRadius: 10, border: '1px solid #e5e7eb' }}
           />
           <button type="submit" style={{ background: '#f97360', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: 10 }}>
@@ -115,18 +98,8 @@ function Home() {
         </form>
 
         {error && <div style={{ color: '#b91c1c', marginBottom: 12 }}>{error}</div>}
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-            {(recipes || []).map((m) => (
-              <div key={m.idMeal} style={{ background: '#fff', border: '1px solid #eee', borderRadius: 12, overflow: 'hidden' }}>
-                <img src={m.strMealThumb} alt={m.strMeal} style={{ width: '100%', height: 140, objectFit: 'cover' }} />
-                <div style={{ padding: 12, fontWeight: 600 }}>{m.strMeal}</div>
-              </div>
-            ))}
-          </div>
-        )}
+        <RecipeGrid items={recipes} loading={loading} onSelect={(m) => setOpenId(m.idMeal)} />
+        <RecipeModal mealId={openId} onClose={() => setOpenId(null)} />
       </main>
     </div>
   );
