@@ -24,15 +24,21 @@ const defaultOrigins = [
   'http://127.0.0.1:3000',
   'https://enigma-it-task.vercel.app'
 ];
-const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : defaultOrigins;
-app.use(
-  cors({
-    origin: ["https://enigma-it-task.vercel.app"],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
-);
+const envOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Health check
 app.get('/health', (req, res) => {
