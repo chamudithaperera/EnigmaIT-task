@@ -19,30 +19,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
-const defaultOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'https://enigma-it-task.vercel.app'
-];
-const normalizeOrigin = (o) => (o || '').toLowerCase().replace(/\/$/, '');
-const envOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
-const allowedOrigins = Array.from(
-  new Set([...defaultOrigins, ...envOrigins].map(normalizeOrigin))
+const defaultOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : defaultOrigins;
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  })
 );
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    const requestOrigin = normalizeOrigin(origin);
-    if (allowedOrigins.includes(requestOrigin)) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -63,7 +49,7 @@ app.use((err, req, res, next) => {
 });
 
 // Mongo connection
-const mongoUri = process.env.MONGO_URI || 'MONGO_URI=mongodb+srv://chamudithapereera:CKPerera%40123@cluster0.qtu4xzd.mongodb.net/recipeAppDB?retryWrites=true&w=majority&appName=Cluster0';
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/recipeAppDB';
 
 mongoose
   .connect(mongoUri)
