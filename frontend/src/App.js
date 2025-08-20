@@ -8,6 +8,11 @@ import { useSelector } from 'react-redux';
 
 function App() {
   const user = useSelector((s) => s.auth.user);
+  const isHydrating = useSelector((s) => s.auth.isHydrating);
+
+  if (isHydrating) {
+    return null;
+  }
   return (
     <BrowserRouter>
       <Routes>

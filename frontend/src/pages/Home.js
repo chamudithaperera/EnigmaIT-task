@@ -12,7 +12,7 @@ function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
-  const [active, setActive] = useState('Pasta');
+  const [active, setActive] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -33,6 +33,9 @@ function Home() {
         const cats = await fetchCategories();
         if (!mounted) return;
         setCategories(cats);
+        if (cats && cats.length > 0) {
+          setActive(cats[0].strCategory);
+        }
       } catch (e) {
         setError('Failed to load categories');
       } finally {
@@ -99,7 +102,7 @@ function Home() {
             onClick={() => navigate('/favorites')}
             style={{ padding: '8px 16px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 8 }}
           >
-            ❤️ Favorites
+            Favorites
           </button>
           <button 
             onClick={handleLogout}

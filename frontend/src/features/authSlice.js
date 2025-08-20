@@ -36,7 +36,8 @@ export const logoutUser = createAsyncThunk('auth/logout', async () => {
 const initialState = {
   user: null,
   status: 'idle',
-  error: null
+  error: null,
+  isHydrating: false
 };
 
 const authSlice = createSlice({
@@ -49,6 +50,9 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(hydrateUser.pending, (state) => {
+        state.isHydrating = true;
+      })
       .addCase(registerUser.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -74,7 +78,11 @@ const authSlice = createSlice({
         state.error = action.payload || 'Login failed';
       })
       .addCase(hydrateUser.fulfilled, (state, action) => {
+        state.isHydrating = false;
         if (action.payload) state.user = action.payload;
+      })
+      .addCase(hydrateUser.rejected, (state) => {
+        state.isHydrating = false;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
