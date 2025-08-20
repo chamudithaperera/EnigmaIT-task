@@ -8,6 +8,10 @@ A full‑stack recipe explorer with authentication and favorites. Users can regi
 - **Recipes**: Browse categories, search recipes, view details (TheMealDB API)
 - **Favorites**: Add/remove recipes to personal favorites (stored in MongoDB)
 
+### Live URLs
+- Frontend: [`https://enigma-it-task.vercel.app/`](https://enigma-it-task.vercel.app/)
+- Backend: [`https://enigma-it-task-backend.vercel.app`](https://enigma-it-task-backend.vercel.app)
+
 ### Demo Video (Screen Recording)
 [Watch the demo video](https://drive.google.com/file/d/1CKV06pzefSy18rrzibI7Ca73hlmNj2-Y/view?usp=sharing)
 
@@ -152,11 +156,13 @@ Recipes (client-side only):
 
 ### Postman Collection
 - Collection: `postman/EnigmaIT-RecipeApp.postman_collection.json`
-- Environment: `postman/EnigmaIT-Local.postman_environment.json`
+- Environments:
+  - Local: `postman/EnigmaIT-Local.postman_environment.json`
+  - Vercel: `postman/EnigmaIT-Vercel.postman_environment.json`
 
 How to use:
 - Open Postman → Import → select both files.
-- Select environment "EnigmaIT Local" and confirm `base_url` (default `http://localhost:5000`).
+- Select an environment (Local or Vercel) and confirm `base_url`.
 - Run in order:
   - Auth → Register (optional) → Login
   - Auth → Profile (verifies cookie session)
