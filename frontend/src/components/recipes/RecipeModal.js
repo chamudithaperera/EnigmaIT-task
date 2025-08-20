@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchMeal } from '../../api/recipeApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFavorites, removeFromFavorites } from '../../features/favoritesSlice';
 
 function RecipeModal({ mealId, onClose }) {
   const [meal, setMeal] = useState(null);
+  const dispatch = useDispatch();
+  const favorites = useSelector((s) => s.favorites.items);
+  const isFavorite = favorites.some(f => f.recipeId === mealId);
+
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -14,6 +20,21 @@ function RecipeModal({ mealId, onClose }) {
     load();
     return () => { mounted = false; };
   }, [mealId]);
+
+  const toggleFavorite = async () => {
+    if (!meal) return;
+    const recipe = {
+      recipeId: meal.idMeal,
+      recipeTitle: meal.strMeal,
+      recipeImage: meal.strMealThumb
+    };
+    
+    if (isFavorite) {
+      await dispatch(removeFromFavorites(meal.idMeal));
+    } else {
+      await dispatch(addToFavorites(recipe));
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -44,7 +65,19 @@ function RecipeModal({ mealId, onClose }) {
             ) : (
               <div style={{ padding: 24 }}>Loading...</div>
             )}
-            <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button 
+                onClick={toggleFavorite}
+                style={{ 
+                  padding: '10px 14px', 
+                  borderRadius: 10, 
+                  border: '1px solid #e5e7eb', 
+                  background: isFavorite ? '#ef4444' : '#f3f4f6',
+                  color: isFavorite ? '#fff' : '#111'
+                }}
+              >
+                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+              </button>
               <button onClick={onClose} style={{ padding: '10px 14px', borderRadius: 10, border: '1px solid #e5e7eb', background: '#f3f4f6' }}>Close</button>
             </div>
           </motion.div>
