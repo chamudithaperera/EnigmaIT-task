@@ -29,11 +29,58 @@ A full‑stack recipe explorer with authentication and favorites. Users can regi
 ### Project Structure
 ```
 EnigmaIT-task/
-  backend/
-    server.js
-    src/{controllers, middleware, models, routes}
-  frontend/
-    src/{pages, components, features, api, store}
+│── backend/
+│   ├── package.json
+│   ├── server.js
+│   ├── .env
+│   └── src/
+│       ├── controllers/
+│       │   ├── authController.js
+│       │   └── recipeController.js
+│       │   └── userController.js
+│       ├── middleware/
+│       │   └── authMiddleware.js
+│       ├── models/
+│       │   └── Favorite.js
+│       │   └── User.js
+│       └── routes/
+│           ├── authRoutes.js
+│           └── recipeRoutes.js
+│           └── userRoutes.js
+│
+│── frontend/
+│   ├── package.json
+│   ├── public/
+│   │   └── index.html
+│   └── src/
+│       ├── api/
+│       │   ├── authApi.js
+│       │   ├── recipeApi.js
+│       │   └── userApi.js
+│       ├── components/
+│       │   └── recipes/
+│       │       ├── CategoryFilter.js
+│       │       ├── RecipeGrid.js
+│       │       └── RecipeModal.js
+│       ├── features/
+│       │   ├── authSlice.js
+│       │   └── favoritesSlice.js
+│       ├── pages/
+│       │   ├── Favorites.js
+│       │   ├── Home.js
+│       │   ├── Login.js
+│       │   └── Register.js
+│       ├── store/
+│       │   └── store.js
+│       ├── App.js
+│       ├── index.js
+│
+│── postman/
+│   ├── EnigmaIT-Local.postman_environment.json
+│   └── EnigmaIT-RecipeApp.postman_collection.json
+│
+└── README.md
+
 ```
 
 ### Getting Started
