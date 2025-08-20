@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { fetchCategories, fetchByCategory, searchMeals } from '../api/recipeApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../features/authSlice';
+import { logoutUser } from '../features/authSlice';
 import CategoryFilter from '../components/recipes/CategoryFilter';
 import RecipeGrid from '../components/recipes/RecipeGrid';
 import RecipeModal from '../components/recipes/RecipeModal';
@@ -84,8 +84,8 @@ function Home() {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     navigate('/login');
   };
 
@@ -99,7 +99,7 @@ function Home() {
             onClick={() => navigate('/favorites')}
             style={{ padding: '8px 16px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 8 }}
           >
-            Favorites
+            ❤️ Favorites
           </button>
           <button 
             onClick={handleLogout}

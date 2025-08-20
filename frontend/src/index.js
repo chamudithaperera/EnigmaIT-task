@@ -5,6 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store/store';
+import { hydrateUser } from './features/authSlice';
+
+store.dispatch(hydrateUser());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

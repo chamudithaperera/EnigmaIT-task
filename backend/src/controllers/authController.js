@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'SecretKey123!';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
 
 const setTokenCookie = (res, token) => {
   const isProd = process.env.NODE_ENV === 'production';
@@ -11,7 +11,7 @@ const setTokenCookie = (res, token) => {
     httpOnly: true,
     sameSite: isProd ? 'none' : 'lax',
     secure: isProd,
-    maxAge: 1000 * 60 * 60 * 24 * 7
+    maxAge: 1000 * 60 * 60 * 24 * 1
   });
 };
 
@@ -76,6 +76,16 @@ export const profile = async (req, res) => {
   const user = await User.findById(req.userId).select('_id name email');
   if (!user) return res.status(404).json({ message: 'User not found' });
   return res.status(200).json({ user });
+};
+
+export const logout = async (req, res) => {
+  const isProd = process.env.NODE_ENV === 'production';
+  res.clearCookie('token', {
+    httpOnly: true,
+    sameSite: isProd ? 'none' : 'lax',
+    secure: isProd
+  });
+  return res.status(200).json({ message: 'Logged out' });
 };
 
 

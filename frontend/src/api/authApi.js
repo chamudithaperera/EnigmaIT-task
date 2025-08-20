@@ -15,9 +15,21 @@ export const login = async (payload) => {
   return data;
 };
 
+export const profile = async () => {
+  const { data } = await api.get('/api/auth/profile');
+  return data;
+};
+
+export const logout = async () => {
+  const { data } = await api.post('/api/auth/logout');
+  return data;
+};
+
 export default {
   register,
-  login
+  login,
+  profile,
+  logout
 };
 
 
