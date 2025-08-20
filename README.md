@@ -9,10 +9,7 @@ A full‑stack recipe explorer with authentication and favorites. Users can regi
 - **Favorites**: Add/remove recipes to personal favorites (stored in MongoDB)
 
 ### Demo Video (Screen Recording)
-- Placeholder: [Watch the demo video](https://example.com)
-  - macOS QuickTime: File → New Screen Recording → Options (choose microphone, save to Desktop) → Record
-  - Walkthrough: register/login → browse categories → search → open recipe → add/remove favorites → refresh (session persists)
-  - Upload to Drive/YouTube and replace the placeholder link
+[Watch the demo video](https://drive.google.com/file/d/1CKV06pzefSy18rrzibI7Ca73hlmNj2-Y/view?usp=sharing)
 
 ### Tech Stack
 - **Frontend**
